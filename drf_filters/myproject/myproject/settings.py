@@ -127,9 +127,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 REST_FRAMEWORK = {
-    # For global filtering
+    # For global filtering (Searching)
     # 'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
     
     # To change the search param
     'SEARCH_PARAM': 'query', # default is 'search'
+    
+    # To change the ordering param
+    'ORDERING_PARAM': 'sort', # default is 'ordering'
 }
