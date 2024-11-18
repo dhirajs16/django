@@ -1,0 +1,13 @@
+{% extends 'myapp/base.html' %}
+
+{% block title %}{{user}}{% endblock %}
+
+{% block content %}
+<h1>This is Profile page</h1>
+<h3>Welcome {{user.first_name}}</h3>
+<a href="{% url 'logout' %}">Log out</a><br>
+<a href="{% url 'changepassword' %}">Change Password with old password</a><br>
+<a href="{% url 'changepassword2' %}">Change Password without old password</a><br>
+
+
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends 'myapp/base.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<h1>This is Login page</h1>
+<form action="" method="post" novalidate>
+    {% csrf_token %}
+    {% for field in form %}
+    {{field.label_tag}}
+    {{field}}
+    {{field.error_messages}}<br><br>
+    {% endfor %}
+    <input type="submit" value="Login">
+</form>
+<br>
+<a href="{% url 'signup' %}">SignUp</a>
+{% endblock %}
