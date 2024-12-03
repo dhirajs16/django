@@ -27,6 +27,11 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# Configure Authentication backend
+AUTHENTICATION_BACKENDS = (
+    "django.contrib.auth.backends.ModelBackend",  # Default backend
+    "allauth.account.auth_backends.AuthenticationBackend",  # Allauth backend
+)
 
 # Application definition
 
@@ -37,8 +42,30 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'django.contrib.sites',  # Required for allauth
+    'allauth',               # Main allauth app
+    'allauth.account',       # Account management
+    'allauth.socialaccount', # Social account management
+    'allauth.socialaccount.providers.github',  # GitHub provider
+
+
+    # Internal Apps
     'myapp',
 ]
+
+SITE_ID = 1
+
+
+SOCIALACCOUNT_PROVIDERS = {
+    'github': {
+        'APP': {
+            'client_id': '123',
+            'secret': '456',
+            'key': ''
+        }
+    }
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -48,6 +75,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "allauth.account.middleware.AccountMiddleware", # All auth middleware
 ]
 
 ROOT_URLCONF = 'myproject.urls'
