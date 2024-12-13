@@ -10,3 +10,7 @@
 - How to override the global auth and permissions for individual classes.
 - Different Permission classes (AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly, IsAdminUser)
 - Three types of users(admin, staff & common user)
+
+<hr>
+
+### **Django Allauth**
