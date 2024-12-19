@@ -2,10 +2,11 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from .models import Product
 from .serializers import ProductSerializer
-from .api import fetch
+from .services import fetch
 
 def home(request):
-    data = fetch()
+    url = "https://fakestoreapi.in/api/products?limit=150"
+    data = fetch_data(url)
     print(type(data))
     for item in data:
         serializer = ProductSerializer(data = item)
