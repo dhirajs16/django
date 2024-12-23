@@ -8,7 +8,7 @@
 
 <hr>
 
-## Setup 
+## Setup for default token
 
 ### Step 1: Install Django Rest Framework and Simple JWT
 
@@ -114,3 +114,153 @@ class ProtectedView(APIView):
    ```
 
 2. **Test JWT Tokens**: Use tools like Postman or cURL to test token generation and protected endpoint access.
+
+
+<hr>
+
+## **Creating tokens manually**
+
+### Step 1: Install Simple JWT and add to installed apps
+
+Install the Simple JWT package.
+```bash
+pip install djangorestframework-simplejwt
+```
+
+Add to `settings.py` file:
+
+```python
+
+INSTALLED_APPS = [
+    ...
+    'rest_framework_simplejwt',
+    ...
+]
+
+```
+
+### Step 2: Setup Corsheaders to avoid cors-policy error
+
+Installation
+
+```bash
+pip install django-cors-headers
+```
+
+Configuration of cors headers in `settings.py` file
+
+- Add it to your installed apps:
+
+```bash
+INSTALLED_APPS = [
+    ...,
+    "corsheaders",
+    ...,
+]
+```
+- Add corsheader middleware just above common middleware
+
+```python
+MIDDLEWARE = [
+    ...,
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    ...,
+]
+```
+- Add url of the frontend
+```python
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+]
+```
+
+### Step 3: Setup Custom User model
+
+[Docs](https://docs.djangoproject.com/en/5.1/topics/auth/customizing/#a-full-example)
+
+Use email for authentication instead of username 
+
+- For model
+```python
+from django.db import models
+from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
+
+# Custom User model
+class User(AbstractBaseUser):
+    email = models.EmailField(
+        verbose_name="email address",
+        max_length=255,
+        unique=True,
+    )
+    name = models.CharField(max_length=255)
+    tc = models.BooleanField()
+    is_active = models.BooleanField(default=True)
+    is_admin = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    # objects = MyUserManager()
+
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = ["name", "tc"]
+
+    def __str__(self):
+        return self.email
+
+    def has_perm(self, perm, obj=None):
+        "Does the user have a specific permission?"
+        # Simplest possible answer: Yes, always
+        return self.is_admin
+
+    def has_module_perms(self, app_label):
+        "Does the user have permissions to view the app `app_label`?"
+        # Simplest possible answer: Yes, always
+        return True
+
+    @property
+    def is_staff(self):
+        "Is the user a member of staff?"
+        # Simplest possible answer: All admins are staff
+        return self.is_admin
+
+```
+
+- For model manager
+```python
+# Customer model manager
+class UserManager(BaseUserManager):
+    def create_user(self, email, name, tc, password=None, password2 = None):
+        """
+        Creates and saves a User with the given email, name, tc and password.
+        """
+        if not email:
+            raise ValueError("Users must have an email address")
+
+        user = self.model(
+            email=self.normalize_email(email),
+            name = name,
+            tc = tc,
+        )
+
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, email, name, tc, password=None):
+        """
+        Creates and saves a superuser with the given email, name, tc and password.
+        """
+        user = self.create_user(
+            email,
+            password=password,
+            name = name,
+            tc = tc,
+        )
+        user.is_admin = True
+        user.save(using=self._db)
+        return user
+```
+
+
