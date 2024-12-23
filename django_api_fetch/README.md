@@ -1,6 +1,6 @@
 # Requests Library for Data Fetching
 
-## Step 1: Install the Requests Library
+### Step 1: Install the Requests Library
 
 If you haven't already installed the `requests` library, you can do so using pip:
 
@@ -8,7 +8,7 @@ If you haven't already installed the `requests` library, you can do so using pip
 pip install requests
 ```
 
-## Step 2: Create a Service Module
+### Step 2: Create a Service Module
 
 It's a good practice to keep API calls separate from your views. Create a new file named `services.py` in your app directory:
 
@@ -27,7 +27,7 @@ def fetch_data(url, params=None):
         return None
 ```
 
-## Step 3: Use the Service in Your Views
+### Step 3: Use the Service in Your Views
 
 Now, you can use this service function in your views to fetch data from the third-party API:
 
@@ -49,7 +49,7 @@ class ThirdPartyDataView(APIView):
             return Response({"error": "Failed to fetch data"}, status=500)
 ```
 
-## Step 4: Define URL Patterns
+### Step 4: Define URL Patterns
 
 Add a URL pattern for your view in your app's `urls.py`:
 
@@ -63,7 +63,7 @@ urlpatterns = [
 ]
 ```
 
-## Step 5: Include App URLs in Main Project
+### Step 5: Include App URLs in Main Project
 
 Make sure to include your app's URL patterns in your main project's `urls.py`:
 
@@ -78,7 +78,7 @@ urlpatterns = [
 ]
 ```
 
-## Step 6: Run the Server and Test
+### Step 6: Run the Server and Test
 
 Run your Django server:
 
