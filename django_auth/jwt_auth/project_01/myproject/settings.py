@@ -126,6 +126,8 @@ REST_FRAMEWORK = {
     )
 }
 
+AUTH_USER_MODEL = 'myapp.User'
+
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
 ]

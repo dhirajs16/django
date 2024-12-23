@@ -201,7 +201,7 @@ class User(AbstractBaseUser):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    # objects = MyUserManager()
+    objects = UserManager()
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["name", "tc"]
@@ -262,5 +262,56 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 ```
+- To view user model in the admin dashboard configure `admin.py` file
+```python
+from django.contrib import admin
+from .models import User
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+
+# Register your models here.
+class UserModelAdmin(BaseUserAdmin):
+    # The fields to be used in displaying the User model.
+    # These override the definitions on the base UserAdmin
+    # that reference specific fields on auth.User.
+    list_display = ["id", "email", "name", "is_admin", "tc", "created_at"]
+    list_filter = ["is_admin"]
+
+    # Responsible to display fields on dashboard for individual user
+    fieldsets = [
+        (None, {"fields": ["email", "password"]}),
+        ("Personal info", {"fields": ["name", "tc"]}),
+        ("Permissions", {"fields": ["is_admin"]}),
+    ]
+
+    # Acts as the form while adding new user
+    add_fieldsets = [
+        (
+            None,
+            {
+                "classes": ["wide"],
+                "fields": ["email", "name", "tc", "password1", "password2"],
+            },
+        ),
+    ]
+
+    # search, filter and ordering
+    search_fields = ["email"]
+    ordering = ["email", "id"]
+    filter_horizontal = []
 
 
+
+# Now register the new UserAdmin...
+admin.site.register(User, UserModelAdmin)
+
+```
+
+- Change the default user model to above created custom user model in `settings.py`.
+
+```python
+
+AUTH_USER_MODEL = 'myapp.User'
+
+```
+
+**Note**: If you makemigration before changing the default user model `AUTH_USER_MODEL = 'myapp.User'` in the `settings.py` file, you might face `Foreign Key Constraint` error while modify the field data of user model. In that case delete all the `_pycache_`, `db.sqlite3` and `0001_initial.py` files and then make new migration and superuser.
